@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?fileVersion 5.0.0?>
+<cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage2">
+	<storageModule moduleId="org.eclipse.cdt.core.settings">
+		<cconfiguration id="cdt.managedbuild.toolchain.gnu.base.111318116">
+			<storageModule
+				buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider"
+				id="cdt.managedbuild.toolchain.gnu.base.111318116" moduleId="org.eclipse.cdt.core.settings"
+				name="Default">
+				<externalSettings />
+				<extensions>
+					<extension id="org.eclipse.cdt.core.GNU_ELF" point="org.eclipse.cdt.core.BinaryParser" />
+					<extension id="org.eclipse.cdt.core.MachO64" point="org.eclipse.cdt.core.BinaryParser" />
+					<extension id="org.eclipse.cdt.core.Cygwin_PE" point="org.eclipse.cdt.core.BinaryParser" />
+					<extension id="org.eclipse.cdt.core.PE" point="org.eclipse.cdt.core.BinaryParser" />
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser" />
+					<extension id="org.eclipse.cdt.core.GCCErrorParser"
+						point="org.eclipse.cdt.core.ErrorParser" />
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration artifactName="${ProjName}"
+					buildProperties="" description=""
+					id="cdt.managedbuild.toolchain.gnu.base.111318116" name="Default"
+					parent="org.eclipse.cdt.build.core.emptycfg">
+					<folderInfo
+						id="cdt.managedbuild.toolchain.gnu.base.111318116.1528038413"
+						name="/" resourcePath="">
+						<toolChain
+							id="org.eclipse.linuxtools.cdt.autotools.core.toolChain.803342463"
+							name="GNU Autotools Toolchain" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolChain">
+							<targetPlatform
+								id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.targetPlatform.1447712866"
+								isAbstract="false" name="GNU Autotools Target Platform"
+								superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.targetPlatform" />
+							<builder buildPath="/Path-Planning/build/Default"
+								id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder.1120502299"
+								keepEnvironmentInBuildfile="false" name="Autotools Makefile Generator"
+								superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder" />
+							<tool
+								id="org.eclipse.linuxtools.cdt.autotools.core.gnu.toolchain.tool.configure.1693981632"
+								name="configure"
+								superClass="org.eclipse.linuxtools.cdt.autotools.core.gnu.toolchain.tool.configure">
+								<option
+									id="org.eclipse.linuxtools.cdt.autotools.core.option.configure.name.1075090562"
+									superClass="org.eclipse.linuxtools.cdt.autotools.core.option.configure.name"
+									value="cdt.managedbuild.toolchain.gnu.base.111318116"
+									valueType="string" />
+							</tool>
+							<tool
+								id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.autogen.486636095"
+								name="autogen.sh"
+								superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.autogen" />
+							<tool
+								id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gcc.644910923"
+								name="GCC C Compiler"
+								superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gcc">
+								<inputType
+									id="cdt.managedbuild.tool.gnu.c.compiler.input.210288059"
+									superClass="cdt.managedbuild.tool.gnu.c.compiler.input" />
+							</tool>
+							<tool
+								id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gpp.953277567"
+								name="GCC C++ Compiler"
+								superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gpp">
+								<option id="gnu.cpp.compiler.option.include.paths.1965804839"
+									name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths"
+									useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="/usr/include/uWS" />
+									<listOptionValue builtIn="false" value="/usr/lib64" />
+								</option>
+								<option id="gnu.cpp.compiler.option.include.files.1068750754"
+									name="Include files (-include)" superClass="gnu.cpp.compiler.option.include.files"
+									useByScannerDiscovery="false" valueType="includeFiles">
+									<listOptionValue builtIn="false" value="/usr/lib64/libuWS.so" />
+									<listOptionValue builtIn="false" value="/usr/include/uWS" />
+								</option>
+								<inputType
+									id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1027270643"
+									superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input" />
+							</tool>
+						</toolChain>
+					</folderInfo>
+					<folderInfo
+						id="cdt.managedbuild.toolchain.gnu.base.111318116.1978519124"
+						name="/" resourcePath="build">
+						<toolChain
+							id="org.eclipse.linuxtools.cdt.autotools.core.toolChain.2046101582"
+							name="GNU Autotools Toolchain" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolChain"
+							unusedChildren="">
+							<tool
+								id="org.eclipse.linuxtools.cdt.autotools.core.gnu.toolchain.tool.configure.993233958"
+								name="configure"
+								superClass="org.eclipse.linuxtools.cdt.autotools.core.gnu.toolchain.tool.configure.1693981632" />
+							<tool
+								id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.autogen.693449862"
+								name="autogen.sh"
+								superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.autogen.486636095" />
+							<tool
+								id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gcc.1501949059"
+								name="GCC C Compiler"
+								superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gcc.644910923" />
+							<tool
+								id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gpp.459209669"
+								name="GCC C++ Compiler"
+								superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gpp.953277567" />
+						</toolChain>
+					</folderInfo>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings" />
+			<storageModule moduleId="de.marw.cdt.cmake.core.settings">
+				<options />
+			</storageModule>
+		</cconfiguration>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.core.pathentry">
+		<pathentry excluding="**/CMakeFiles/" kind="out" path="" />
+	</storageModule>
+	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+		<project id="Path-Planning.null.1553281305" name="Path-Planning" />
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders" />
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets" />
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Default">
+			<resource resourceType="PROJECT" workspacePath="/Path-Planning" />
+		</configuration>
+	</storageModule>
+	<storageModule
+		moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings" />
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true"
+			selectedProfileId="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile" />
+		<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
+			<buildOutputProvider>
+				<openAction enabled="true" filePath="" />
+				<parser enabled="true" />
+			</buildOutputProvider>
+			<scannerInfoProvider id="specsFile">
+				<runAction arguments="-E -P -v -dD ${plugin_state_location}/${specs_file}"
+					command="/usr/bin/cc" useDefault="true" />
+				<parser enabled="true" />
+			</scannerInfoProvider>
+		</profile>
+		<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerFileProfile">
+			<buildOutputProvider>
+				<openAction enabled="true" filePath="" />
+				<parser enabled="true" />
+			</buildOutputProvider>
+			<scannerInfoProvider id="makefileGenerator">
+				<runAction arguments="-f ${project_name}_scd.mk" command="/usr/bin/make"
+					useDefault="true" />
+				<parser enabled="true" />
+			</scannerInfoProvider>
+		</profile>
+		<scannerConfigBuildInfo
+			instanceId="cdt.managedbuild.toolchain.gnu.base.111318116;cdt.managedbuild.toolchain.gnu.base.111318116.1528038413;cdt.managedbuild.tool.gnu.c.compiler.base.144843187;cdt.managedbuild.tool.gnu.c.compiler.input.1690754337">
+			<autodiscovery enabled="true" problemReportingEnabled="true"
+				selectedProfileId="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile" />
+			<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
+				<buildOutputProvider>
+					<openAction enabled="true" filePath="" />
+					<parser enabled="true" />
+				</buildOutputProvider>
+				<scannerInfoProvider id="specsFile">
+					<runAction arguments="-E -P -v -dD ${plugin_state_location}/${specs_file}"
+						command="/usr/bin/cc" useDefault="true" />
+					<parser enabled="true" />
+				</scannerInfoProvider>
+			</profile>
+			<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerFileProfile">
+				<buildOutputProvider>
+					<openAction enabled="true" filePath="" />
+					<parser enabled="true" />
+				</buildOutputProvider>
+				<scannerInfoProvider id="makefileGenerator">
+					<runAction arguments="-f ${project_name}_scd.mk" command="/usr/bin/make"
+						useDefault="true" />
+					<parser enabled="true" />
+				</scannerInfoProvider>
+			</profile>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo
+			instanceId="cdt.managedbuild.toolchain.gnu.base.111318116;cdt.managedbuild.toolchain.gnu.base.111318116.1528038413;cdt.managedbuild.tool.gnu.cpp.compiler.base.1233151714;cdt.managedbuild.tool.gnu.cpp.compiler.input.1308993757">
+			<autodiscovery enabled="true" problemReportingEnabled="true"
+				selectedProfileId="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile" />
+			<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerProjectProfile">
+				<buildOutputProvider>
+					<openAction enabled="true" filePath="" />
+					<parser enabled="true" />
+				</buildOutputProvider>
+				<scannerInfoProvider id="specsFile">
+					<runAction arguments="-E -P -v -dD ${plugin_state_location}/${specs_file}"
+						command="/usr/bin/cc" useDefault="true" />
+					<parser enabled="true" />
+				</scannerInfoProvider>
+			</profile>
+			<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerFileProfile">
+				<buildOutputProvider>
+					<openAction enabled="true" filePath="" />
+					<parser enabled="true" />
+				</buildOutputProvider>
+				<scannerInfoProvider id="makefileGenerator">
+					<runAction arguments="-f ${project_name}_scd.mk" command="/usr/bin/make"
+						useDefault="true" />
+					<parser enabled="true" />
+				</scannerInfoProvider>
+			</profile>
+		</scannerConfigBuildInfo>
+	</storageModule>
+</cproject>
