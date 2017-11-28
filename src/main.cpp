@@ -325,8 +325,50 @@ int main() {
 
 
 
+          	//Start with all of the previous path points from the last time
+          	for(int i = 0; i , previous_path_x.size();i++)
+          	{
+          		next_x_vals.push_back(previous_path_x[i]);
+          		next_y_vals.push_back(previous_path_y[i]);
+          	}
+
+          	//Calculate how to break up spline points so that we travel at our desired reference velocity
+          	double target_x = 30.0;
+          	double target_y = s(target_x);//asks spline s what y is given x
+          	double target_dist = sqrt((target_x)*(target_x)+(target_y)*(target_y));//Pythagorean
+
+          	double x_add_on = 0;
+
+          	//Fill up the rest of the path planner after filling it with prior points. We will always have 50 points
+
+          	for(int i = 1; i <= 50-previous_path_x.size(); i++)
+          	{
+          		double N = (target_dist/(0.02*ref_vel/2.24));//2.24 converts mph to mps; N is number of hash marks
+          		double x_point = x_add_on+(target_x)/N;
+          		double y_point = s(x_point);
+
+          		x_add_on = x_point;
+
+          		double x_ref = x_point;
+          		double y_ref = y_point;
+
+          		//rotate back to normal coordinates after rotating it earlier
+          		x_point = (x_ref*cos(ref_yaw) -y_ref*sin(ref_yaw));
+          		y_point = (x_ref*cos(ref_yaw) +y_ref*cos(ref_yaw));
+
+          		x_point += ref_x;
+          		y_point += ref_y;
+
+          		next_x_vals.push_back(x_point);
+          		next_y_vals.push_back(y_point);
 
 
+
+
+
+
+
+          	}
 
 
           	json msgJson;
