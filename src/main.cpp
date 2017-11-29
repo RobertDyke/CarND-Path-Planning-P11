@@ -248,17 +248,17 @@ int main() {
 
           	bool too_close = false;
           	//find ref_vel to use
-          	std::cout<<"test 0.3"<<endl;
+          	//std::cout<<"test 0.3"<<endl;
           	for(int i = 0; i < sensor_fusion.size(); i++)//where i is the ith car
           	{
           		//car is in my lane
           		float d = sensor_fusion[i][6];
           		
-          		std::cout<<"test 0.4"<<endl;
-          		std::cout<<"lane = "<<lane<<endl;
+          		//std::cout<<"test 0.4"<<endl;
+          		//std::cout<<"lane = "<<lane<<endl;
           		if(d < (2+4*lane+2) && d > (2+4*lane-2))
           		{
-          			std::cout<<"test 1"<<endl;
+          			//std::cout<<"test 1"<<endl;
           			double vx = sensor_fusion[i][3];
           			double vy = sensor_fusion[i][4];
           			double check_speed = sqrt(vx*vx+vy*vy);
@@ -270,12 +270,15 @@ int main() {
           			//check s values greater than mine and s gap
           			if((check_car_s > car_s) && ((check_car_s-car_s) < 30))//if car is in front of us and closer than 30 meters
           			{
-          				std::cout<<"test 2"<<endl;
+          				
           				//Do some logic here, lower reference velocity so we don't crash into the car in front of us
           				//could also flag to change lanes
           				//ref_vel = 29.5;//mph
           				too_close = true;
-          				std::cout<<"too close"<<endl;
+          				if(lane>0)
+          				{	
+          					lane = 0;
+          				}
           			}
           		}
           	}
@@ -340,6 +343,7 @@ int main() {
           	}
           	//std::cout<<"Test 2"<<endl;
           	//In Frenet add evenly 30m spaced points ahead of the starting reference
+          	//30m, 60m, and 90m are the points spline uses to build the curve
           	vector<double> next_wp0 = getXY(car_s+30.0,2+(4*lane),map_waypoints_s,map_waypoints_x,map_waypoints_y);
           	vector<double> next_wp1 = getXY(car_s+60.0,2+(4*lane),map_waypoints_s,map_waypoints_x,map_waypoints_y);
           	vector<double> next_wp2 = getXY(car_s+90.0,2+(4*lane),map_waypoints_s,map_waypoints_x,map_waypoints_y);
