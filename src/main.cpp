@@ -177,7 +177,7 @@ int main() {
   int lane = 1;//start in lane 1. Lanes are 0 for far left, 1 for middle, 2 for right
 
    //Have a reference velocity to target
-  double ref_vel = 49.5;//mph
+  double ref_vel = 0.0;//mph
 
   ifstream in_map_(map_file_.c_str(), ifstream::in);
 
@@ -248,32 +248,51 @@ int main() {
 
           	bool too_close = false;
           	//find ref_vel to use
+          	std::cout<<"test 0.3"<<endl;
           	for(int i = 0; i < sensor_fusion.size(); i++)//where i is the ith car
           	{
           		//car is in my lane
-          		float d = sensor_fusion[1][6];
-          		if(d <(2 +4*lane+2) && d>(2+4*lane-2))
+          		float d = sensor_fusion[i][6];
+          		
+          		std::cout<<"test 0.4"<<endl;
+          		std::cout<<"lane = "<<lane<<endl;
+          		if(d < (2+4*lane+2) && d > (2+4*lane-2))
           		{
+          			std::cout<<"test 1"<<endl;
           			double vx = sensor_fusion[i][3];
           			double vy = sensor_fusion[i][4];
           			double check_speed = sqrt(vx*vx+vy*vy);
           			double check_car_s = sensor_fusion[i][5];
 
-          			check_car_s +=((double)prev_size*.02*check_speed);//if using prior points can project s value out
+          			check_car_s+=((double)prev_size*.02*check_speed);//if using prior points can project s value out
+          			std::cout<<"check_car_s = "<<check_car_s<<endl;
+          			std::cout<<"car_s = "<<car_s<<endl;
           			//check s values greater than mine and s gap
-          			if((check_car_s > car_s)&&((check_car_s-car_s) < 30))//if car is in front of us and closer than 30 meters
+          			if((check_car_s > car_s) && ((check_car_s-car_s) < 30))//if car is in front of us and closer than 30 meters
           			{
+          				std::cout<<"test 2"<<endl;
           				//Do some logic here, lower reference velocity so we don't crash into the car in front of us
           				//could also flag to change lanes
-          				ref_vel = 29.5;//mph
+          				//ref_vel = 29.5;//mph
           				too_close = true;
+          				std::cout<<"too close"<<endl;
           			}
           		}
           	}
+          	//below decreases or increases speed at about 5 meters per second squared
+          	std::cout<<"too close = "<<too_close<<endl;
+          	if(too_close)
+          	{
+          		ref_vel -=.224; //This works out to about 5 meters per second squared.
+          		std::cout<<"minus .224"<<endl;
+          	}
+          	else if(ref_vel < 49.5)
+          	{
+          		ref_vel +=.224;
+          		std::cout<<"plus .224"<<endl;
+          	}
 
-
-
-
+          	//too_close = false;
 
 
           	//std::cout<<"Test 1"<<endl;
@@ -360,7 +379,7 @@ int main() {
 
           	//std::cout<<"Test 4.5"<<endl;
           	//Start with all of the previous path points from the last time
-          	std::cout<<"previous_path_x.size() = "<<previous_path_x.size()<<endl;
+          	//std::cout<<"previous_path_x.size() = "<<previous_path_x.size()<<endl;
           	for(int i = 0; i < previous_path_x.size();i++)
           	{
           		next_x_vals.push_back(previous_path_x[i]);
@@ -380,7 +399,10 @@ int main() {
           	//std::cout<<"Test 5"<<endl;
           	for(int i = 1; i <= 50-previous_path_x.size(); i++)
           	{
+
           		double N = (target_dist/(0.02*ref_vel/2.24));//2.24 converts mph to mps; N is number of hash marks
+
+
           		double x_point = x_add_on+(target_x)/N;
           		double y_point = s(x_point);
 
