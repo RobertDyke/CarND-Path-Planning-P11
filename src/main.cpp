@@ -174,6 +174,10 @@ int main() {
   string map_file_ = "../data/highway_map.csv";
   // The max s value before wrapping around the track back to 0
   double max_s = 6945.554;
+  int lane = 1;//start in lane 1. Lanes are 0 for far left, 1 for middle, 2 for right
+
+   //Have a reference velocity to target
+  double ref_vel = 49.5;//mph
 
   ifstream in_map_(map_file_.c_str(), ifstream::in);
 
@@ -197,12 +201,8 @@ int main() {
   	map_waypoints_dy.push_back(d_y);
   }
 
-  int lane = 1;//start in lane 1. Lanes are 0 for far left, 1 for middle, 2 for right
 
-  //Have a reference velocity to target
-  double ref_vel = 49.5;//mph
-
-  h.onMessage([&map_waypoints_x,&map_waypoints_y,&map_waypoints_s,&map_waypoints_dx,&map_waypoints_dy](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
+  h.onMessage([&map_waypoints_x,&map_waypoints_y,&map_waypoints_s,&map_waypoints_dx,&map_waypoints_dy,&lane,&ref_vel](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
                      uWS::OpCode opCode) {
     // "42" at the start of the message means there's a websocket message event.
     // The 4 signifies a websocket message
@@ -241,8 +241,42 @@ int main() {
 
           	int prev_size = previous_path_x.size();
 
+          	if(prev_size >0)
+          	{
+          		car_s = end_path_s;
+          	}
+
+          	bool too_close = false;
+          	//find ref_vel to use
+          	for(int i = 0; i < sensor_fusion.size(); i++)//where i is the ith car
+          	{
+          		//car is in my lane
+          		float d = sensor_fusion[1][6];
+          		if(d <(2 +4*lane+2) && d>(2+4*lane-2))
+          		{
+          			double vx = sensor_fusion[i][3];
+          			double vy = sensor_fusion[i][4];
+          			double check_speed = sqrt(vx*vx+vy*vy);
+          			double check_car_s = sensor_fusion[i][5];
+
+          			check_car_s +=((double)prev_size*.02*check_speed);//if using prior points can project s value out
+          			//check s values greater than mine and s gap
+          			if((check_car_s > car_s)&&((check_car_s-car_s) < 30))//if car is in front of us and closer than 30 meters
+          			{
+          				//Do some logic here, lower reference velocity so we don't crash into the car in front of us
+          				//could also flag to change lanes
+          				ref_vel = 29.5;//mph
+          				too_close = true;
+          			}
+          		}
+          	}
 
 
+
+
+
+
+          	//std::cout<<"Test 1"<<endl;
           	// Creates a list of widely spaced waypoints (x,y), evenly spaced at 30m
           	//later we will interpolate these waypoings with a spline and fill it in with more points
           	vector<double> ptsx;
@@ -285,21 +319,21 @@ int main() {
           		ptsy.push_back(ref_y);
 
           	}
-
+          	//std::cout<<"Test 2"<<endl;
           	//In Frenet add evenly 30m spaced points ahead of the starting reference
-          	vector<double> next_wp0 = getXY(car_s+30,(2+4*lane),map_waypoints_s,map_waypoints_x,map_waypoints_y);
-          	vector<double> next_wp1 = getXY(car_s+60,(2+4*lane),map_waypoints_s,map_waypoints_x,map_waypoints_y);
-          	vector<double> next_wp2 = getXY(car_s+90,(2+4*lane),map_waypoints_s,map_waypoints_x,map_waypoints_y);
+          	vector<double> next_wp0 = getXY(car_s+30.0,2+(4*lane),map_waypoints_s,map_waypoints_x,map_waypoints_y);
+          	vector<double> next_wp1 = getXY(car_s+60.0,2+(4*lane),map_waypoints_s,map_waypoints_x,map_waypoints_y);
+          	vector<double> next_wp2 = getXY(car_s+90.0,2+(4*lane),map_waypoints_s,map_waypoints_x,map_waypoints_y);
 
           	ptsx.push_back(next_wp0[0]);
           	ptsx.push_back(next_wp1[0]);
           	ptsx.push_back(next_wp2[0]);
 
-          	ptsy.push_back(next_wp0[0]);
-          	ptsy.push_back(next_wp1[0]);
-          	ptsy.push_back(next_wp2[0]);
+          	ptsy.push_back(next_wp0[1]);
+          	ptsy.push_back(next_wp1[1]);
+          	ptsy.push_back(next_wp2[1]);
 
-
+          	//std::cout<<"Test 3"<<endl;
           	for (int i = 0;i < ptsx.size();i++)
           	{
           		//shift car reference angle to 0 degrees
@@ -309,13 +343,13 @@ int main() {
           		double shift_y = ptsy[i]-ref_y;
 
           		ptsx[i] = (shift_x *cos(0-ref_yaw)-shift_y*sin(0-ref_yaw));
-          		ptsy[i] = (shift_x *cos(0-ref_yaw)-shift_y*cos(0-ref_yaw));
+          		ptsy[i] = (shift_x *sin(0-ref_yaw)+shift_y*cos(0-ref_yaw));
           	}
 
 
           	//create spline
           	tk::spline s;
-
+          	//std::cout<<"Test 4"<<endl;
           	//set (x,y) points to the spline
           	s.set_points(ptsx,ptsy);
 
@@ -324,23 +358,26 @@ int main() {
           	vector<double> next_y_vals;
 
 
-
+          	//std::cout<<"Test 4.5"<<endl;
           	//Start with all of the previous path points from the last time
-          	for(int i = 0; i , previous_path_x.size();i++)
+          	std::cout<<"previous_path_x.size() = "<<previous_path_x.size()<<endl;
+          	for(int i = 0; i < previous_path_x.size();i++)
           	{
           		next_x_vals.push_back(previous_path_x[i]);
           		next_y_vals.push_back(previous_path_y[i]);
+          		//std::cout<<"Test 4.6"<<" "<<i<<" "<<endl;
           	}
 
           	//Calculate how to break up spline points so that we travel at our desired reference velocity
           	double target_x = 30.0;
           	double target_y = s(target_x);//asks spline s what y is given x
+          	//std::cout<<"target_y = "<<target_y<<endl;
           	double target_dist = sqrt((target_x)*(target_x)+(target_y)*(target_y));//Pythagorean
-
+          	//std::cout<<"Test 4.7"<<endl;
           	double x_add_on = 0;
 
           	//Fill up the rest of the path planner after filling it with prior points. We will always have 50 points
-
+          	//std::cout<<"Test 5"<<endl;
           	for(int i = 1; i <= 50-previous_path_x.size(); i++)
           	{
           		double N = (target_dist/(0.02*ref_vel/2.24));//2.24 converts mph to mps; N is number of hash marks
@@ -354,7 +391,7 @@ int main() {
 
           		//rotate back to normal coordinates after rotating it earlier
           		x_point = (x_ref*cos(ref_yaw) -y_ref*sin(ref_yaw));
-          		y_point = (x_ref*cos(ref_yaw) +y_ref*cos(ref_yaw));
+          		y_point = (x_ref*sin(ref_yaw) +y_ref*cos(ref_yaw));
 
           		x_point += ref_x;
           		y_point += ref_y;
@@ -363,37 +400,11 @@ int main() {
           		next_y_vals.push_back(y_point);
 
 
-
-
-
-
-
           	}
 
-
+          	//std::cout<<"Test 6"<<endl;
           	json msgJson;
 
-          	vector<double> next_x_vals;
-          	vector<double> next_y_vals;
-
-          	double dist_inc = 0.3;//distance between way points
-          	for(int i = 0;i < 50; i++)
-          	{
-          		double next_s = car_s+(i+1)*dist_inc;//i+1 so it will be the next point not the current point
-          		double next_d = 6;//stays in same lane
-          		vector<double> xy = getXY(next_s, next_d, map_waypoints_s, map_waypoints_x, map_waypoints_y);
-
-          		//two lines below are from first run
-          		//next_x_vals.push_back(car_x+(dist_inc*i)*cos(deg2rad(car_yaw)));//constant angle
-          		//next_y_vals.push_back(car_y+(dist_inc*i)*sin(deg2rad(car_yaw)));
-
-          		next_x_vals.push_back(xy[0]);
-          		next_y_vals.push_back(xy[1]);
-
-
-          	}
-
-          	// TODO: define a path made up of (x,y) points that the car will visit sequentially every .02 seconds
           	msgJson["next_x"] = next_x_vals;
           	msgJson["next_y"] = next_y_vals;
 
