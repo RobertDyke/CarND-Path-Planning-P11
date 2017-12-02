@@ -175,7 +175,8 @@ int main() {
   // The max s value before wrapping around the track back to 0
   double max_s = 6945.554;
   int lane = 1;//start in lane 1. Lanes are 0 for far left, 1 for middle, 2 for right
-
+  int plan_steps = 50;// number of steps to project into the future
+  int safety_gap = 30;//too close
    //Have a reference velocity to target
   double ref_vel = 0.0;//mph
 
@@ -241,33 +242,130 @@ int main() {
 
           	int prev_size = previous_path_x.size();
 
-          	if(prev_size >0)
+          	if(prev_size == 0)
           	{
-          		car_s = end_path_s;
+          		end_path_s = car_s;
           	}
-
-          	bool too_close = false;
+          	double safety_gap = (ref_vel / 2)+5;
+          	bool left_open = true;
+          	bool right_open = true;
+          	double left_clear = 10000.0;
+          	double right_clear = 10000.0;
+          	if(lane == 0)
+          	{
+          		left_open = false;         
+          	}
+          	if(lane == 2)
+          	{
+          		right_open = false;
+          	}
+          	bool too_close = false; 
           	//find ref_vel to use
-          	//std::cout<<"test 0.3"<<endl;
+          	std::cout<<"test 0.3"<<endl;
           	for(int i = 0; i < sensor_fusion.size(); i++)//where i is the ith car
           	{
           		//car is in my lane
           		float d = sensor_fusion[i][6];
-          		
-          		//std::cout<<"test 0.4"<<endl;
-          		//std::cout<<"lane = "<<lane<<endl;
-          		if(d < (2+4*lane+2) && d > (2+4*lane-2))
+          		float d_lane = 1;
+          		if(d < 4)
           		{
-          			//std::cout<<"test 1"<<endl;
-          			double vx = sensor_fusion[i][3];
-          			double vy = sensor_fusion[i][4];
-          			double check_speed = sqrt(vx*vx+vy*vy);
-          			double check_car_s = sensor_fusion[i][5];
-
-          			check_car_s+=((double)prev_size*.02*check_speed);//if using prior points can project s value out
-          			std::cout<<"check_car_s = "<<check_car_s<<endl;
-          			std::cout<<"car_s = "<<car_s<<endl;
-          			//check s values greater than mine and s gap
+          			d_lane = 0;
+          		}
+          		if(d > 8)
+          		{
+          			d_lane = 2;
+          		}
+          		//std::cout<<"test 0.4"<<endl;
+          		std::cout<<"lane = "<<lane<<endl;
+          		
+          			
+          		double vx = sensor_fusion[i][3];
+          		double vy = sensor_fusion[i][4];
+          		double check_speed = sqrt(vx*vx+vy*vy)*0.02;
+          		double obs_s = sensor_fusion[i][5];
+          		double proj_obs_s = obs_s + ((double)prev_size * check_speed);
+          		double gap = proj_obs_s - end_path_s;
+          		
+          		double check_car_s = sensor_fusion[i][5];
+				check_car_s += ((double)prev_size*.02*check_speed);//if using prior points can project s value out
+          			
+          		//std::cout<<"check_car_s = "<<check_car_s<<endl;
+          		//std::cout<<"car_s = "<<car_s<<endl;
+          		
+          		if(obs_s > car_s)
+          		{
+          			if(gap < safety_gap)
+          			{
+          				if(d_lane == lane)
+          				{
+          					too_close = true;
+          				}
+          				if(d_lane == (lane-1))
+          				{
+          					left_open = false;
+          					if(gap < left_clear)
+          					{
+          						left_clear = gap;
+          					}
+          				}
+          				if(d_lane == (lane+1))
+          				{
+          					right_open = false;
+          					if (gap < right_clear)
+          					{
+          						right_clear = gap;
+          					}
+          				}
+          			}	
+          		}
+          		if((obs_s > car_s) && (obs_s < end_path_s))
+				{
+	  	  	  	  	 if(d_lane == (lane-1))
+	  	  	  	  	 {
+	  	  	  	  		 left_open = false;
+	  	  	  	  	 }
+	  	  	  	  	 if(d_lane == (lane+1))
+	  	  	  	  	 {
+	  	  	  	  		 right_open = false;
+	  	  	  	  	 }
+				}
+  	  	  	  	if((proj_obs_s > car_s) && (proj_obs_s < end_path_s))
+  	  	  	  	{
+  	  	  	  		if(d_lane == (lane-1))
+  	  	  	  		{
+  	  	  	  			left_open = false;
+  	  	  	  		}
+  	  	  	  		if(d_lane == (lane+1))
+  	  	  	  		{
+  	  	  	  			right_open = false;
+  	  	  	  		}
+  	  	  	  	}
+          	}
+          	if(too_close)
+          	{
+         		if(left_open)
+          		{
+          			if(right_open && (right_clear > left_clear))
+          			{
+          				lane = lane + 1;
+          			}
+          			else
+          			{
+          				lane = lane - 1;
+          			}
+          		}
+          		else if(right_open)
+          		{
+          			lane = lane + 1;
+          		}
+          				
+          			
+          	}
+          		
+          		
+          		
+          		//check s values greater than mine and s gap
+          		/*
           			if((check_car_s > car_s) && ((check_car_s-car_s) < 30))//if car is in front of us and closer than 30 meters
           			{
           				
@@ -279,11 +377,10 @@ int main() {
           				{	
           					lane = 0;
           				}
-          			}
-          		}
-          	}
+          			}*/
+          
           	//below decreases or increases speed at about 5 meters per second squared
-          	std::cout<<"too close = "<<too_close<<endl;
+          	//std::cout<<"too close = "<<too_close<<endl;
           	if(too_close)
           	{
           		ref_vel -=.224; //This works out to about 5 meters per second squared.
@@ -398,14 +495,18 @@ int main() {
           	double target_dist = sqrt((target_x)*(target_x)+(target_y)*(target_y));//Pythagorean
           	//std::cout<<"Test 4.7"<<endl;
           	double x_add_on = 0;
-
+          	std::cout<<"target_dist = "<<target_dist<<"   ref_vel = "<<ref_vel<<endl;
+          	
           	//Fill up the rest of the path planner after filling it with prior points. We will always have 50 points
           	//std::cout<<"Test 5"<<endl;
           	for(int i = 1; i <= 50-previous_path_x.size(); i++)
           	{
 
           		double N = (target_dist/(0.02*ref_vel/2.24));//2.24 converts mph to mps; N is number of hash marks
-
+          		if (i==1)
+          		{
+          			std::cout<<"N = "<<N<<endl;
+          		}
 
           		double x_point = x_add_on+(target_x)/N;
           		double y_point = s(x_point);
@@ -427,7 +528,7 @@ int main() {
 
 
           	}
-
+          	
           	//std::cout<<"Test 6"<<endl;
           	json msgJson;
 
