@@ -307,6 +307,10 @@ int main() {
           		 * gap large enough to safely get into.
           		 * 
           		 */
+          		std::cout<<"i = "<<i<<endl;
+          		std::cout<<"car_s = "<<car_s<<endl;
+          		std::cout<<"obs_s = "<<obs_s<<endl;
+          		std::cout<<"end_path_s = "<<end_path_s<<endl;
           		if(obs_s > car_s)
           		{
           			if(gap < safety_gap)
