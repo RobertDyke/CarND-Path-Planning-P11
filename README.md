@@ -1,3 +1,14 @@
+This project takes a car driving on the Udacity simulator and plans the driving path. The path causes the car to stay below a safe accelleration, speed (50mph), and jerk. The car also trys to stay as fast as possible within these constraints and avoiding other cars on the track. The code "lags" 20ms behind the simulator to model real world lag in the sensors.
+
+The highway map is in data/highway_map.csv. It contains data points in Frenet(ie s,d) coordinates.
+
+Path points are modified with a spline function to "smooth" the path for a less jerky ride. Part of the solution is the Quintic Polynomial Solver. It is described in more detail in the said named repository. The Eigan library is used for colving linear equations. 
+
+The sensor_fusion variable contains all info for the other cars on the right hand side of the road. (format: id,x,y,vx,vy,s,d).
+
+
+# original Udacity readme below:
+
 # CarND-Path-Planning-Project
 Self-Driving Car Engineer Nanodegree Program 
    
